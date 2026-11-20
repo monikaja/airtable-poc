@@ -4,7 +4,7 @@ La API de Airtable no permite crear fórmulas, lookups ni rollups. Después de `
 
 Un rollup solo puede recorrer un campo de enlace. Por eso BOM necesita campos auxiliares para el tejido y para el avío, que luego se combinan en una fórmula.
 
-Los campos de enlace inversos los crea Airtable al ejecutar el seed y normalmente se llaman como la tabla de origen: `BOM` en Prendas, Tejidos y Avíos; `Catálogo` en Prendas y Clientes.
+Los campos de enlace inversos los crea Airtable al ejecutar el seed y normalmente se llaman como la tabla de origen: `Tejidos` y `Avíos` en Proveedores; `BOM` en Prendas, Tejidos y Avíos; `Muestras` en Prendas; `Catálogo` en Prendas y Clientes.
 
 ## 1. Tejidos y Avíos
 
