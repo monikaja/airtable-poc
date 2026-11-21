@@ -38,11 +38,15 @@ El campo primario va primero en cada tabla.
 | Catálogo | Línea (texto), Cliente (enlace), Prenda (enlace), Unidades anuales (número) |
 
 ## Campos calculados
-La API de Airtable no permite crear fórmulas, lookups ni rollups: se crean a mano en la interfaz. El código los lee, nunca los recalcula.
+La API de Airtable no permite crear fórmulas, lookups ni rollups: se crean a mano en la interfaz. El código lee los campos finales, nunca los recalcula. Configuración exacta y valores de comprobación: docs/campos-calculados.md.
+
+Un rollup solo recorre un campo de enlace. Como cada línea de BOM enlaza un tejido o un avío, BOM usa campos auxiliares por enlace (Precio tejido/avío, Plazo tejido/avío, Estado tejido/avío) que se combinan en fórmulas.
+
+Campos finales que lee el código:
 - Tejidos y Avíos: Plazo proveedor (lookup de Proveedor).
-- BOM: Precio material (rollup SUM del precio del Tejido y del Avío), Coste línea (fórmula: Cantidad × Precio material), Plazo línea (rollup MAX del plazo), Descatalogado (fórmula: 1 si el material está descatalogado), En revisión (fórmula: 1 si está en revisión).
-- Prendas: Coste materiales (rollup SUM de Coste línea), Plazo crítico (rollup MAX de Plazo línea), Riesgo (fórmula: Rojo si está en Producción y algún material está descatalogado; Ámbar si alguno está en revisión o el plazo crítico supera 60 días; Verde en el resto).
-- Catálogo: Coste anual (fórmula: Unidades anuales × Coste materiales de la prenda).
+- BOM: Precio material (fórmula: Precio tejido + Precio avío), Coste línea (fórmula: Cantidad × Precio material), Plazo línea (fórmula: MAX de Plazo tejido y Plazo avío), Descatalogado (fórmula: 1 si el material está descatalogado), En revisión (fórmula: 1 si está en revisión).
+- Prendas: Coste materiales (rollup SUM de Coste línea), Plazo crítico (rollup MAX de Plazo línea), Riesgo (fórmula: Rojo si está en Producción y algún material está descatalogado; Ámbar si alguno está en revisión o el plazo crítico supera 60 días; Verde en el resto). Riesgo usa los auxiliares Materiales descatalogados y Materiales en revisión (rollups SUM).
+- Catálogo: Coste anual (fórmula: Unidades anuales × Coste materiales prenda, un rollup auxiliar de la prenda).
 
 ## Datos de demo
 Unos 15 proveedores, 30 tejidos, 20 avíos, 25 prendas, 60 líneas de BOM, 30 muestras, 8 clientes y 40 líneas de catálogo. Incluye casos que luzcan en la demo:
