@@ -1,0 +1,97 @@
+import type {
+  BomUnit,
+  ClientSector,
+  GarmentPhase,
+  MaterialStatus,
+  RiskLevel,
+  SupplierStatus,
+  TrimType,
+} from './schema.js';
+
+// Read model of the Airtable base, already mapped from raw records.
+// Computed values come from Airtable as-is; null means Airtable returned no value.
+
+export interface Supplier {
+  id: string;
+  name: string;
+  country: string;
+  leadTimeDays: number | null;
+  status: SupplierStatus | null;
+}
+
+export interface Fabric {
+  id: string;
+  code: string;
+  name: string;
+  composition: string;
+  weightGsm: number | null;
+  color: string;
+  pricePerMeter: number | null;
+  status: MaterialStatus | null;
+  supplierId: string | null;
+  supplierLeadTimeDays: number | null;
+}
+
+export interface Trim {
+  id: string;
+  reference: string;
+  type: TrimType | null;
+  pricePerUnit: number | null;
+  status: MaterialStatus | null;
+  supplierId: string | null;
+  supplierLeadTimeDays: number | null;
+}
+
+export interface Garment {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  phase: GarmentPhase | null;
+  materialsCost: number | null;
+  criticalLeadTimeDays: number | null;
+  risk: RiskLevel | null;
+}
+
+export interface BomLine {
+  id: string;
+  garmentId: string | null;
+  fabricId: string | null;
+  trimId: string | null;
+  quantity: number | null;
+  unit: BomUnit | null;
+  lineCost: number | null;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  sector: ClientSector | null;
+  employees: number | null;
+}
+
+export interface CatalogLine {
+  id: string;
+  clientId: string | null;
+  garmentId: string | null;
+  annualUnits: number | null;
+  annualCost: number | null;
+}
+
+export interface Snapshot {
+  suppliers: Supplier[];
+  fabrics: Fabric[];
+  trims: Trim[];
+  garments: Garment[];
+  bom: BomLine[];
+  clients: Client[];
+  catalog: CatalogLine[];
+}
+
+/** Subject kinds as they appear in the public API (?tipo=). */
+export const SUBJECT_KINDS = ['tejido', 'avio', 'proveedor'] as const;
+export type SubjectKind = (typeof SUBJECT_KINDS)[number];
+
+export function isSubjectKind(value: string | null): value is SubjectKind {
+  return value !== null && (SUBJECT_KINDS as readonly string[]).includes(value);
+}

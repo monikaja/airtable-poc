@@ -1,6 +1,6 @@
 // Single source of truth for Airtable table names, field names and option values,
 // shared by /api, /src and /scripts. Computed fields are created by hand in the
-// Airtable UI (see docs/campos-calculados.md) and are not listed here yet.
+// Airtable UI (see docs/campos-calculados.md); the app only reads them.
 
 export const MATERIAL_STATUSES = ['Activo', 'En revisión', 'Descatalogado'] as const;
 export type MaterialStatus = (typeof MATERIAL_STATUSES)[number];
@@ -137,4 +137,26 @@ export const FIELDS = {
     garment: 'Prenda',
     annualUnits: 'Unidades anuales',
   },
+} as const;
+
+export const RISK_LEVELS = ['Rojo', 'Ámbar', 'Verde'] as const;
+export type RiskLevel = (typeof RISK_LEVELS)[number];
+
+/** Final computed fields created by hand in Airtable. Read-only: never written, never recalculated. */
+export const COMPUTED_FIELDS = {
+  fabrics: { supplierLeadTimeDays: 'Plazo proveedor' },
+  trims: { supplierLeadTimeDays: 'Plazo proveedor' },
+  bom: {
+    materialPrice: 'Precio material',
+    lineCost: 'Coste línea',
+    lineLeadTimeDays: 'Plazo línea',
+    discontinued: 'Descatalogado',
+    inReview: 'En revisión',
+  },
+  garments: {
+    materialsCost: 'Coste materiales',
+    criticalLeadTimeDays: 'Plazo crítico',
+    risk: 'Riesgo',
+  },
+  catalog: { annualCost: 'Coste anual' },
 } as const;
