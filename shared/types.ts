@@ -95,3 +95,13 @@ export type SubjectKind = (typeof SUBJECT_KINDS)[number];
 export function isSubjectKind(value: string | null): value is SubjectKind {
   return value !== null && (SUBJECT_KINDS as readonly string[]).includes(value);
 }
+
+export interface SearchResult {
+  tipo: SubjectKind;
+  id: string;
+  /** "TJ-007 · Sarga 65/35 marino", "AV-005 · Cremallera" or the supplier name. */
+  label: string;
+  /** Composition for fabrics, supplier for trims, country for suppliers. */
+  detail: string;
+  status: string | null;
+}
