@@ -1,5 +1,6 @@
+import { computeImpact } from '../../shared/impact.js';
 import { searchSubjects } from '../../shared/search.js';
-import type { Snapshot } from '../../shared/types.js';
+import { isSubjectKind, type Snapshot, type SubjectKind } from '../../shared/types.js';
 import { AirtableReadError } from './airtable.js';
 import { ConfigError } from './snapshot.js';
 
@@ -27,6 +28,27 @@ export async function searchRoute(request: Request, loadSnapshot: SnapshotLoader
   const query = new URL(request.url).searchParams.get('q') ?? '';
   try {
     return jsonResponse({ results: searchSubjects(await loadSnapshot(), query) });
+  } catch (error) {
+    return errorResponse(error);
+  }
+}
+
+const NOT_FOUND_MESSAGES: Record<SubjectKind, string> = {
+  tejido: 'No se encontró el tejido.',
+  avio: 'No se encontró el avío.',
+  proveedor: 'No se encontró el proveedor.',
+};
+
+export async function impactRoute(request: Request, loadSnapshot: SnapshotLoader): Promise<Response> {
+  const params = new URL(request.url).searchParams;
+  const tipo = params.get('tipo');
+  const id = params.get('id');
+  if (!isSubjectKind(tipo)) return jsonResponse({ error: 'El parámetro tipo debe ser tejido, avio o proveedor.' }, 400);
+  if (!id) return jsonResponse({ error: 'Falta el parámetro id.' }, 400);
+
+  try {
+    const impact = computeImpact(await loadSnapshot(), tipo, id);
+    return impact ? jsonResponse(impact) : jsonResponse({ error: NOT_FOUND_MESSAGES[tipo] }, 404);
   } catch (error) {
     return errorResponse(error);
   }

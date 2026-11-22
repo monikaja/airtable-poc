@@ -1,3 +1,4 @@
+import { fabricLabel, trimLabel } from './labels.js';
 import type { SearchResult, Snapshot, SubjectKind } from './types.js';
 
 // Search over fabrics (code, name), trims (reference, type) and suppliers (name).
@@ -36,7 +37,7 @@ export function searchSubjects(snapshot: Snapshot, rawQuery: string): SearchResu
       result: {
         tipo: 'tejido' as const,
         id: fabric.id,
-        label: `${fabric.code} · ${fabric.name}`,
+        label: fabricLabel(fabric),
         detail: fabric.composition,
         status: fabric.status,
       },
@@ -46,7 +47,7 @@ export function searchSubjects(snapshot: Snapshot, rawQuery: string): SearchResu
       result: {
         tipo: 'avio' as const,
         id: trim.id,
-        label: trim.type ? `${trim.reference} · ${trim.type}` : trim.reference,
+        label: trimLabel(trim),
         detail: (trim.supplierId && supplierNames.get(trim.supplierId)) || '',
         status: trim.status,
       },

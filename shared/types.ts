@@ -105,3 +105,47 @@ export interface SearchResult {
   detail: string;
   status: string | null;
 }
+
+export interface AffectedGarment {
+  id: string;
+  code: string;
+  name: string;
+  phase: GarmentPhase | null;
+  risk: RiskLevel | null;
+  materialsCost: number | null;
+  criticalLeadTimeDays: number | null;
+  /** Sum of "Coste línea" of this garment's BOM lines that use an affected material. */
+  affectedMaterialCost: number;
+}
+
+export interface AffectedClient {
+  id: string;
+  name: string;
+  sector: ClientSector | null;
+  garmentCount: number;
+  annualUnits: number;
+  /** Sum of "Coste anual" of the affected garments in this client's catalog. */
+  annualCost: number;
+  /** Annual units × affected material cost: the base a price change multiplies. */
+  affectedAnnualMaterialCost: number;
+}
+
+export interface ImpactResult {
+  subject: {
+    tipo: SubjectKind;
+    id: string;
+    label: string;
+    status: string | null;
+    /** Materials considered: 1 for a fabric or trim, all of a supplier's materials otherwise. */
+    materialCount: number;
+  };
+  garments: AffectedGarment[];
+  clients: AffectedClient[];
+  totals: {
+    garmentCount: number;
+    clientCount: number;
+    annualUnits: number;
+    annualCost: number;
+    affectedAnnualMaterialCost: number;
+  };
+}
