@@ -1,0 +1,102 @@
+/* Neutral prototype style: the art direction belongs to the creative team. */
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-hover: #eef1f5;
+  --text: #1c2430;
+  --text-muted: #5b6676;
+  --border: #dde2e9;
+  --border-strong: #b9c1cc;
+  --focus: #2f6fdb;
+  --radius: 8px;
+  --shadow: 0 6px 20px rgb(15 23 42 / 0.12);
+  --danger-text: #a3261d;
+  --risk-red-bg: #fde4e1;
+  --risk-red-text: #8f1d14;
+  --risk-amber-bg: #fdf0d2;
+  --risk-amber-text: #7a4d00;
+  --risk-green-bg: #ddf3e4;
+  --risk-green-text: #1d6136;
+  --sim-bg: #eef0ff;
+  --sim-border: #6b6fd6;
+  --sim-text: #3b3fa8;
+  --up-text: #a3261d;
+  --down-text: #1d6136;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --surface: #1b2129;
+    --surface-hover: #252d38;
+    --text: #e6eaf0;
+    --text-muted: #9aa5b4;
+    --border: #2e3744;
+    --border-strong: #46525f;
+    --focus: #7aa7ff;
+    --shadow: 0 6px 20px rgb(0 0 0 / 0.45);
+    --danger-text: #ff9a90;
+    --risk-red-bg: #4a1d19;
+    --risk-red-text: #ffb4ab;
+    --risk-amber-bg: #45340f;
+    --risk-amber-text: #ffd27a;
+    --risk-green-bg: #163823;
+    --risk-green-text: #8fdca8;
+    --sim-bg: #22244a;
+    --sim-border: #8f93ff;
+    --sim-text: #c3c5ff;
+    --up-text: #ff9a90;
+    --down-text: #8fdca8;
+  }
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0; }
+h1 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Shared table style for garments and clients. */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.table th,
+.table td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table thead th { font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.table tbody tr:last-child > * { border-bottom: 0; }
+.table tbody th { font-weight: 500; }
+.table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.table .code { font-weight: 600; margin-right: 0.25rem; }
+
+/* Simulated figures are always marked: tag, colour and dashed border. */
+.sim-tag {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px dashed var(--sim-border);
+  border-radius: 999px;
+  background: var(--sim-bg);
+  color: var(--sim-text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.table .sim { background: var(--sim-bg); color: var(--sim-text); }
+.table .pct { display: block; font-size: 0.8125rem; }
