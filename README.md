@@ -1,5 +1,7 @@
 # Análisis de impacto de materiales
 
+[![CI](https://github.com/monikaja/airtable-poc/actions/workflows/ci.yml/badge.svg)](https://github.com/monikaja/airtable-poc/actions/workflows/ci.yml)
+
 Prototipo de PLM que responde en segundos a una pregunta clave: **si cambia un tejido, un avío o un proveedor, ¿qué prendas, qué clientes y cuánto coste se ven afectados?**
 
 Airtable es la fuente de verdad. Encima hay una web en Vue que busca el material, calcula el impacto, simula cambios de precio y propone alternativas compatibles. Todos los datos son ficticios.
@@ -110,6 +112,8 @@ Requisitos: Node 26 y una cuenta de Airtable. La cuenta de Vercel y la clave de 
 | `npm run typecheck` | Comprobación de tipos con `vue-tsc` |
 | `npm run build` | Comprobación de tipos y build de producción |
 | `npm run seed` | Crea las tablas y los datos de demo en Airtable |
+
+Cada pull request y cada push a `main` pasan por CI (GitHub Actions): tipos, tests y build de producción, con la versión de Node de `engines`. No necesita secretos, porque los tests usan dobles de Airtable y de la API de Anthropic.
 
 ## Datos de demo
 
