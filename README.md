@@ -12,7 +12,7 @@ El planteamiento de negocio completo está en [docs/PRD.md](docs/PRD.md).
 
 1. **Buscar** un tejido, un avío o un proveedor por código o nombre.
 2. **Ver dónde se usa.** La respuesta clave va primero, en una frase ("Afecta a 3 prendas y 4 clientes · 28.686,60 € de coste anual"). Debajo aparecen las prendas afectadas, con su fase y un semáforo de riesgo, y los clientes, con sus unidades y su coste anual.
-3. **Simular** una subida o bajada de precio entre −20 % y +40 %. Muestra el coste simulado y la diferencia en € y en % por prenda y por cliente. La simulación se calcula en memoria, está marcada como tal y nunca escribe en Airtable.
+3. **Simular** una subida o bajada de precio entre −20 % y +40 %. Muestra el coste simulado y la diferencia en € y en % por prenda y por cliente. La simulación se calcula en memoria, está marcada como tal y nunca escribe en Airtable. Si el precio del material tiene más de 90 días o no tiene fecha, la app avisa de que la simulación parte de un precio que puede estar desfasado.
 4. **Comparar alternativas.** Para un tejido o un avío propone hasta 3 materiales compatibles, con precio, plazo, riesgo y una frase que explica por qué encajan.
 5. **Compartir** el informe de tres formas:
    - **Copiar resumen:** texto para pegar en un correo o un chat a Cuentas o a Compras.

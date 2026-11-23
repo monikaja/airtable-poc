@@ -14,9 +14,9 @@ const data = snapshot({
     supplier({ id: 'P6', name: 'Lianhe Weaving' }),
   ],
   fabrics: [
-    sarga('TJ-007', { pricePerMeter: 4.8, status: 'Descatalogado', supplierLeadTimeDays: 30 }),
+    sarga('TJ-007', { pricePerMeter: 4.8, status: 'Descatalogado', supplierLeadTimeDays: 30, priceUpdatedOn: '2026-03-03' }),
     sarga('TJ-008', { composition: '67 % poliéster, 33 % algodón', weightGsm: 240, pricePerMeter: 5.1, supplierId: 'P1', supplierLeadTimeDays: 21 }),
-    sarga('TJ-009', { composition: '60 % poliéster, 40 % algodón', weightGsm: 255, pricePerMeter: 4.6, supplierId: 'P6', supplierLeadTimeDays: 50 }),
+    sarga('TJ-009', { composition: '60 % poliéster, 40 % algodón', weightGsm: 255, pricePerMeter: 4.6, supplierId: 'P6', supplierLeadTimeDays: 50, priceUpdatedOn: '2026-10-28' }),
     sarga('TJ-010', { composition: '70 % poliéster, 30 % algodón', weightGsm: 260, pricePerMeter: 5.4, supplierId: 'P2', supplierLeadTimeDays: 18 }),
     sarga('TJ-011', { weightGsm: 300, pricePerMeter: 5.9 }),
     sarga('TJ-012', { composition: '100 % algodón', pricePerMeter: 5.2 }),
@@ -34,6 +34,7 @@ describe('findAlternatives', () => {
       unit: 'm',
       leadTimeDays: 30,
       status: 'Descatalogado',
+      priceUpdatedOn: '2026-03-03',
     });
   });
 
@@ -53,6 +54,7 @@ describe('findAlternatives', () => {
         status: 'Activo',
         risk: 'Verde',
         riskReason: null,
+        priceUpdatedOn: '2026-10-28',
       },
       expect.objectContaining({ id: 'TJ-008', priceDelta: 0.3, priceDeltaPct: 6.3, supplierName: 'Textiles Albera' }),
       expect.objectContaining({ id: 'TJ-010', priceDelta: 0.6, priceDeltaPct: 12.5, leadTimeDays: 18 }),

@@ -1,4 +1,5 @@
 import { fabricLabel, trimLabel } from './labels.js';
+import { oldestPriceDate } from './price-freshness.js';
 import type { RiskLevel } from './schema.js';
 import type { AffectedClient, AffectedGarment, ImpactResult, Snapshot, SubjectKind } from './types.js';
 
@@ -16,23 +17,27 @@ interface Subject {
   label: string;
   status: string | null;
   materialIds: Set<string>;
+  priceUpdatedOn: string | null;
 }
 
 function findSubject(snapshot: Snapshot, tipo: SubjectKind, id: string): Subject | null {
   if (tipo === 'tejido') {
     const fabric = snapshot.fabrics.find((candidate) => candidate.id === id);
-    return fabric ? { label: fabricLabel(fabric), status: fabric.status, materialIds: new Set([fabric.id]) } : null;
+    return fabric ? { label: fabricLabel(fabric), status: fabric.status, materialIds: new Set([fabric.id]), priceUpdatedOn: fabric.priceUpdatedOn } : null;
   }
   if (tipo === 'avio') {
     const trim = snapshot.trims.find((candidate) => candidate.id === id);
-    return trim ? { label: trimLabel(trim), status: trim.status, materialIds: new Set([trim.id]) } : null;
+    return trim ? { label: trimLabel(trim), status: trim.status, materialIds: new Set([trim.id]), priceUpdatedOn: trim.priceUpdatedOn } : null;
   }
   const supplier = snapshot.suppliers.find((candidate) => candidate.id === id);
   if (!supplier) return null;
-  const materialIds = new Set(
-    [...snapshot.fabrics, ...snapshot.trims].filter((material) => material.supplierId === id).map((material) => material.id),
-  );
-  return { label: supplier.name, status: supplier.status, materialIds };
+  const materials = [...snapshot.fabrics, ...snapshot.trims].filter((material) => material.supplierId === id);
+  return {
+    label: supplier.name,
+    status: supplier.status,
+    materialIds: new Set(materials.map((material) => material.id)),
+    priceUpdatedOn: oldestPriceDate(materials.map((material) => material.priceUpdatedOn)),
+  };
 }
 
 /** The impact of a fabric, trim or supplier, or null when it does not exist. */
@@ -101,7 +106,7 @@ export function computeImpact(snapshot: Snapshot, tipo: SubjectKind, id: string)
   const sum = (pick: (client: AffectedClient) => number) => toCents(clients.reduce((total, client) => total + pick(client), 0));
 
   return {
-    subject: { tipo, id, label: subject.label, status: subject.status, materialCount: subject.materialIds.size },
+    subject: { tipo, id, label: subject.label, status: subject.status, materialCount: subject.materialIds.size, priceUpdatedOn: subject.priceUpdatedOn },
     garments,
     clients,
     totals: {

@@ -63,6 +63,7 @@ function fabricAlternatives(snapshot: Snapshot, reference: Fabric, supplierName:
       unit: 'm',
       leadTimeDays: reference.supplierLeadTimeDays,
       status: reference.status,
+      priceUpdatedOn: reference.priceUpdatedOn,
     },
     alternatives: compatible.map((item) => ({
       tipo: 'tejido' as const,
@@ -76,6 +77,7 @@ function fabricAlternatives(snapshot: Snapshot, reference: Fabric, supplierName:
       leadTimeDays: item.supplierLeadTimeDays,
       status: item.status,
       ...materialRisk(item),
+      priceUpdatedOn: item.priceUpdatedOn,
     })),
   };
 }
@@ -100,6 +102,7 @@ function trimAlternatives(snapshot: Snapshot, reference: Trim, supplierName: (id
       unit: 'ud',
       leadTimeDays: reference.supplierLeadTimeDays,
       status: reference.status,
+      priceUpdatedOn: reference.priceUpdatedOn,
     },
     alternatives: compatible.map((item) => ({
       tipo: 'avio' as const,
@@ -113,6 +116,7 @@ function trimAlternatives(snapshot: Snapshot, reference: Trim, supplierName: (id
       leadTimeDays: item.supplierLeadTimeDays,
       status: item.status,
       ...materialRisk(item),
+      priceUpdatedOn: item.priceUpdatedOn,
     })),
   };
 }

@@ -35,6 +35,7 @@ export const READ_FIELDS: Record<SnapshotTable, readonly string[]> = {
     F.fabrics.pricePerMeter,
     F.fabrics.status,
     F.fabrics.supplier,
+    F.fabrics.priceUpdatedOn,
     C.fabrics.supplierLeadTimeDays,
   ],
   trims: [
@@ -43,6 +44,7 @@ export const READ_FIELDS: Record<SnapshotTable, readonly string[]> = {
     F.trims.pricePerUnit,
     F.trims.status,
     F.trims.supplier,
+    F.trims.priceUpdatedOn,
     C.trims.supplierLeadTimeDays,
   ],
   garments: [F.garments.name, F.garments.code, F.garments.category, F.garments.phase, C.garments.materialsCost, C.garments.criticalLeadTimeDays, C.garments.risk],
@@ -61,6 +63,12 @@ function number(fields: RawFields, name: string): number | null {
   const value = fields[name];
   const first = Array.isArray(value) ? value[0] : value;
   return typeof first === 'number' && Number.isFinite(first) ? first : null;
+}
+
+/** Date fields come as "2026-03-03"; anything else is treated as unknown. */
+function date(fields: RawFields, name: string): string | null {
+  const value = fields[name];
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
 }
 
 function linkId(fields: RawFields, name: string): string | null {
@@ -94,6 +102,7 @@ export function mapSnapshot(raw: RawTables): Snapshot {
       status: option(fields, F.fabrics.status, MATERIAL_STATUSES),
       supplierId: linkId(fields, F.fabrics.supplier),
       supplierLeadTimeDays: number(fields, C.fabrics.supplierLeadTimeDays),
+      priceUpdatedOn: date(fields, F.fabrics.priceUpdatedOn),
     })),
     trims: raw.trims.map(({ id, fields }) => ({
       id,
@@ -103,6 +112,7 @@ export function mapSnapshot(raw: RawTables): Snapshot {
       status: option(fields, F.trims.status, MATERIAL_STATUSES),
       supplierId: linkId(fields, F.trims.supplier),
       supplierLeadTimeDays: number(fields, C.trims.supplierLeadTimeDays),
+      priceUpdatedOn: date(fields, F.trims.priceUpdatedOn),
     })),
     garments: raw.garments.map(({ id, fields }) => ({
       id,

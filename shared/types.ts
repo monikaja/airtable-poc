@@ -30,6 +30,8 @@ export interface Fabric {
   status: MaterialStatus | null;
   supplierId: string | null;
   supplierLeadTimeDays: number | null;
+  /** Day the price was last updated in Airtable ("2026-03-03"); null when unknown. */
+  priceUpdatedOn: string | null;
 }
 
 export interface Trim {
@@ -40,6 +42,8 @@ export interface Trim {
   status: MaterialStatus | null;
   supplierId: string | null;
   supplierLeadTimeDays: number | null;
+  /** Day the price was last updated in Airtable ("2026-03-03"); null when unknown. */
+  priceUpdatedOn: string | null;
 }
 
 export interface Garment {
@@ -138,6 +142,8 @@ export interface ImpactResult {
     status: string | null;
     /** Materials considered: 1 for a fabric or trim, all of a supplier's materials otherwise. */
     materialCount: number;
+    /** Price date of the material, or the oldest of a supplier's materials; null when unknown. */
+    priceUpdatedOn: string | null;
   };
   garments: AffectedGarment[];
   clients: AffectedClient[];
@@ -162,6 +168,8 @@ export interface AlternativeReference {
   unit: BomUnit;
   leadTimeDays: number | null;
   status: MaterialStatus | null;
+  /** Day the price was last updated in Airtable ("2026-03-03"); null when unknown. */
+  priceUpdatedOn: string | null;
 }
 
 export interface AlternativeOption {
@@ -180,6 +188,8 @@ export interface AlternativeOption {
   status: MaterialStatus | null;
   risk: Exclude<RiskLevel, 'Rojo'>;
   riskReason: string | null;
+  /** Day the price was last updated in Airtable ("2026-03-03"); null when unknown. */
+  priceUpdatedOn: string | null;
 }
 
 export interface AlternativesBase {

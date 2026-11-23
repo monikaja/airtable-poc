@@ -7,6 +7,7 @@ import ClientTable from './ClientTable.vue';
 import CopyLink from './CopyLink.vue';
 import CopySummary from './CopySummary.vue';
 import GarmentTable from './GarmentTable.vue';
+import PriceDate from './PriceDate.vue';
 import PriceSimulator from './PriceSimulator.vue';
 
 const props = defineProps<{
@@ -77,6 +78,12 @@ onBeforeUnmount(() => controller?.abort());
           {{ impact.subject.label }}
           <span v-if="impact.subject.status" class="summary__status">{{ impact.subject.status }}</span>
         </p>
+        <PriceDate
+          v-if="impact.subject.materialCount > 0"
+          :updated-on="impact.subject.priceUpdatedOn"
+          :scope="impact.subject.tipo === 'proveedor' ? 'proveedor' : 'material'"
+          :simulation-note="impact.totals.garmentCount > 0"
+        />
         <p v-if="impact.totals.garmentCount === 0" class="summary__headline">
           {{ impact.subject.label }} no se usa en ninguna prenda, así que no afecta a ningún cliente.
         </p>
