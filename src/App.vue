@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import type { SearchResult } from '../shared/types';
 import { api } from './api/client';
+import ImpactView from './components/ImpactView.vue';
 import SearchBox from './components/SearchBox.vue';
 
 const subject = ref<SearchResult | null>(null);
@@ -15,7 +16,7 @@ const subject = ref<SearchResult | null>(null);
       <SearchBox :search="api.search" @select="subject = $event" />
     </header>
     <main class="app__main">
-      <p v-if="subject">{{ subject.label }}</p>
+      <ImpactView v-if="subject" :subject="subject" :load-impact="api.impact" />
     </main>
   </div>
 </template>

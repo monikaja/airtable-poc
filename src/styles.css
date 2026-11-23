@@ -74,3 +74,14 @@ h1, h2, h3 { line-height: 1.25; margin: 0; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Shared table style for garments and clients. */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.table th,
+.table td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table thead th { font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.table tbody tr:last-child > * { border-bottom: 0; }
+.table tbody th { font-weight: 500; }
+.table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.table .code { font-weight: 600; margin-right: 0.25rem; }
