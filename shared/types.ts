@@ -149,3 +149,51 @@ export interface ImpactResult {
     affectedAnnualMaterialCost: number;
   };
 }
+
+export type MaterialKind = Exclude<SubjectKind, 'proveedor'>;
+
+export interface AlternativeReference {
+  tipo: MaterialKind;
+  id: string;
+  label: string;
+  /** Composition and weight for fabrics, type for trims. */
+  detail: string;
+  price: number | null;
+  unit: BomUnit;
+  leadTimeDays: number | null;
+  status: MaterialStatus | null;
+}
+
+export interface AlternativeOption {
+  tipo: MaterialKind;
+  id: string;
+  label: string;
+  detail: string;
+  supplierName: string;
+  price: number | null;
+  unit: BomUnit;
+  /** Price minus the reference price, in €; null when either price is unknown. */
+  priceDelta: number | null;
+  /** Price difference as % of the reference price, one decimal. */
+  priceDeltaPct: number | null;
+  leadTimeDays: number | null;
+  status: MaterialStatus | null;
+  risk: Exclude<RiskLevel, 'Rojo'>;
+  riskReason: string | null;
+}
+
+export interface AlternativesBase {
+  reference: AlternativeReference;
+  alternatives: AlternativeOption[];
+}
+
+export interface AlternativesResult {
+  reference: AlternativeReference;
+  alternatives: (AlternativeOption & {
+    explanation: string;
+    /** "llm" when Claude wrote it; "plantilla" when the deterministic template filled in. */
+    explanationSource: ExplanationSource;
+  })[];
+}
+
+export type ExplanationSource = 'llm' | 'plantilla';
