@@ -86,7 +86,7 @@ docs/        PRD, campos calculados, vistas y automatización de Airtable
 Requisitos: Node 26 y una cuenta de Airtable. La cuenta de Vercel y la clave de Anthropic son opcionales.
 
 1. **Instala las dependencias** con `npm install`.
-2. **Crea `.env.local`** en la raíz, sin subirlo al repositorio, con estas variables:
+2. **Crea `.env.local`** en la raíz copiando `.env.example` (`cp .env.example .env.local`) y rellena estas variables. `.env.local` no se sube al repositorio:
 
    | Variable | Para qué |
    | --- | --- |
