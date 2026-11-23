@@ -1,12 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { SearchResult } from '../shared/types';
 import { api } from './api/client';
 import AlternativesPanel from './components/AlternativesPanel.vue';
 import ImpactView from './components/ImpactView.vue';
 import SearchBox from './components/SearchBox.vue';
+import { readShareState, writeShareSearch } from './share';
 
-const subject = ref<SearchResult | null>(null);
+// A shared link opens its material directly; its label arrives with the impact.
+const shared = readShareState(window.location.search);
+const subject = ref<SearchResult | null>(shared ? { tipo: shared.tipo, id: shared.id, label: '', detail: '', status: null } : null);
+const pricePct = ref(shared?.pricePct ?? 0);
+
+function choose(result: SearchResult) {
+  subject.value = result;
+  pricePct.value = 0;
+}
+
+const search = computed(() =>
+  writeShareSearch(subject.value ? { tipo: subject.value.tipo, id: subject.value.id, pricePct: pricePct.value } : null),
+);
+const shareUrl = computed(() => `${window.location.origin}${window.location.pathname}${search.value}`);
+
+// Keep the address bar in step without adding a history entry per slider move.
+watch(search, (value) => window.history.replaceState(null, '', value || window.location.pathname));
 </script>
 
 <template>
@@ -14,11 +31,11 @@ const subject = ref<SearchResult | null>(null);
     <header class="app__header">
       <h1>Análisis de impacto de materiales</h1>
       <p class="app__intro">Busca un tejido, un avío o un proveedor para ver qué prendas y clientes se ven afectados.</p>
-      <SearchBox :search="api.search" @select="subject = $event" />
+      <SearchBox :search="api.search" @select="choose" />
     </header>
 
     <div v-if="subject" class="app__body">
-      <ImpactView :subject="subject" :load-impact="api.impact" />
+      <ImpactView v-model:price-pct="pricePct" :subject="subject" :load-impact="api.impact" :share-url="shareUrl" />
       <AlternativesPanel :subject="subject" :load-alternatives="api.alternatives" />
     </div>
   </div>

@@ -4,6 +4,7 @@ import { simulateTotals } from '../../shared/simulation';
 import type { ImpactResult, SearchResult, SubjectKind } from '../../shared/types';
 import { formatEuro, formatSignedEuro, formatSignedPct, plural } from '../format';
 import ClientTable from './ClientTable.vue';
+import CopyLink from './CopyLink.vue';
 import CopySummary from './CopySummary.vue';
 import GarmentTable from './GarmentTable.vue';
 import PriceSimulator from './PriceSimulator.vue';
@@ -11,13 +12,15 @@ import PriceSimulator from './PriceSimulator.vue';
 const props = defineProps<{
   subject: SearchResult;
   loadImpact: (tipo: SubjectKind, id: string, signal: AbortSignal) => Promise<ImpactResult>;
+  /** Link that reopens this impact; the copy button is only shown when it is given. */
+  shareUrl?: string;
 }>();
 
 const impact = ref<ImpactResult | null>(null);
 const loading = ref(false);
 const error = ref('');
-/** Simulated price change in %, in memory only. */
-const pricePct = ref(0);
+/** Simulated price change in %, in memory only. A parent may own it (v-model:price-pct) to keep it in the link. */
+const pricePct = defineModel<number>('pricePct', { default: 0 });
 const simulatedTotals = computed(() => (impact.value && pricePct.value !== 0 ? simulateTotals(impact.value, pricePct.value) : null));
 let controller: AbortController | undefined;
 
@@ -26,7 +29,6 @@ async function load(subject: SearchResult) {
   controller = new AbortController();
   const { signal } = controller;
   impact.value = null;
-  pricePct.value = 0;
   error.value = '';
   loading.value = true;
   try {
@@ -39,7 +41,15 @@ async function load(subject: SearchResult) {
   }
 }
 
-watch(() => props.subject, load, { immediate: true });
+watch(
+  () => props.subject,
+  (subject, previous) => {
+    // A new subject starts again from its current price; the first one keeps the price of a shared link.
+    if (previous) pricePct.value = 0;
+    load(subject);
+  },
+  { immediate: true },
+);
 onBeforeUnmount(() => controller?.abort());
 </script>
 
@@ -67,7 +77,10 @@ onBeforeUnmount(() => controller?.abort());
           <span class="sim-tag">Simulación {{ formatSignedPct(pricePct) }}</span>:
           {{ formatSignedEuro(simulatedTotals.delta) }} al año ({{ formatSignedPct(simulatedTotals.deltaPct) }})
         </p>
-        <CopySummary class="summary__copy" :impact="impact" :price-pct="pricePct" />
+        <div class="summary__actions">
+          <CopySummary :impact="impact" :price-pct="pricePct" />
+          <CopyLink v-if="shareUrl" :url="shareUrl" />
+        </div>
       </div>
 
       <template v-if="impact.totals.garmentCount > 0">
@@ -99,7 +112,7 @@ onBeforeUnmount(() => controller?.abort());
 .summary__subject { margin: 0; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .summary__status { font-size: 0.8125rem; padding: 0 0.5rem; border: 1px solid var(--border-strong); border-radius: 999px; }
 .summary__headline { margin: 0; font-size: 1.25rem; }
-.summary__copy { margin-top: 0.5rem; }
+.summary__actions { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: start; margin-top: 0.5rem; }
 .summary__simulation { margin: 0; font-weight: 600; color: var(--sim-text); font-variant-numeric: tabular-nums; }
 .impact__heading { font-size: 1.0625rem; margin-top: 0.5rem; }
 </style>

@@ -14,7 +14,7 @@ El planteamiento de negocio completo está en [docs/PRD.md](docs/PRD.md).
 2. **Ver dónde se usa.** La respuesta clave va primero, en una frase ("Afecta a 3 prendas y 4 clientes · 28.686,60 € de coste anual"). Debajo aparecen las prendas afectadas, con su fase y un semáforo de riesgo, y los clientes, con sus unidades y su coste anual.
 3. **Simular** una subida o bajada de precio entre −20 % y +40 %. Muestra el coste simulado y la diferencia en € y en % por prenda y por cliente. La simulación se calcula en memoria, está marcada como tal y nunca escribe en Airtable.
 4. **Comparar alternativas.** Para un tejido o un avío propone hasta 3 materiales compatibles, con precio, plazo, riesgo y una frase que explica por qué encajan.
-5. **Compartir.** Copia un resumen en texto para enviarlo a Cuentas o a Compras.
+5. **Compartir.** Copia un resumen en texto para enviarlo a Cuentas o a Compras, o un enlace que abre el mismo material con la misma simulación (`?tipo=tejido&id=…&sim=10`). El enlace muestra los datos del momento en que se abre, no una foto.
 
 El semáforo de riesgo por prenda funciona así:
 
