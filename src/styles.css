@@ -113,3 +113,37 @@ h1 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem); }
 }
 .action-button:hover { background: var(--surface-hover); }
 .action-button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* Printed report (saved as PDF from the print dialog): light colours, no controls, nothing cut off. */
+.print-only { display: none; }
+
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-hover: #ffffff;
+    --text: #1c2430;
+    --text-muted: #5b6676;
+    --border: #dde2e9;
+    --border-strong: #b9c1cc;
+    --shadow: none;
+    --danger-text: #a3261d;
+    --risk-red-bg: #fde4e1;
+    --risk-red-text: #8f1d14;
+    --risk-amber-bg: #fdf0d2;
+    --risk-amber-text: #7a4d00;
+    --risk-green-bg: #ddf3e4;
+    --risk-green-text: #1d6136;
+    --sim-bg: #eef0ff;
+    --sim-border: #6b6fd6;
+    --sim-text: #3b3fa8;
+    --up-text: #a3261d;
+    --down-text: #1d6136;
+  }
+  body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .no-print { display: none !important; }
+  .print-only { display: block; }
+  .table-wrap { overflow: visible; }
+  tr, li { break-inside: avoid; }
+}

@@ -30,8 +30,8 @@ watch(search, (value) => window.history.replaceState(null, '', value || window.l
   <div class="app">
     <header class="app__header">
       <h1>Análisis de impacto de materiales</h1>
-      <p class="app__intro">Busca un tejido, un avío o un proveedor para ver qué prendas y clientes se ven afectados.</p>
-      <SearchBox :search="api.search" @select="choose" />
+      <p class="app__intro no-print">Busca un tejido, un avío o un proveedor para ver qué prendas y clientes se ven afectados.</p>
+      <SearchBox class="no-print" :search="api.search" @select="choose" />
     </header>
 
     <div v-if="subject" class="app__body">
@@ -49,5 +49,12 @@ watch(search, (value) => window.history.replaceState(null, '', value || window.l
 
 @media (min-width: 64rem) {
   .app__body { grid-template-columns: minmax(0, 1fr) 22rem; align-items: start; }
+}
+
+/* The printed report reads top to bottom: impact first, then the alternatives. */
+@media print {
+  .app { padding: 0; max-width: none; }
+  .app__header { margin-bottom: 0.75rem; }
+  .app__body { grid-template-columns: none; }
 }
 </style>

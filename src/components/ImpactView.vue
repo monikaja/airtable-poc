@@ -14,7 +14,15 @@ const props = defineProps<{
   loadImpact: (tipo: SubjectKind, id: string, signal: AbortSignal) => Promise<ImpactResult>;
   /** Link that reopens this impact; the copy button is only shown when it is given. */
   shareUrl?: string;
+  /** Opens the browser print dialog, where the report is saved as PDF. */
+  print?: () => void;
 }>();
+
+const printedOn = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date());
+
+function printReport() {
+  (props.print ?? (() => window.print()))();
+}
 
 const impact = ref<ImpactResult | null>(null);
 const loading = ref(false);
@@ -60,6 +68,10 @@ onBeforeUnmount(() => controller?.abort());
     <p v-else-if="error" class="error" role="alert">{{ error }}</p>
 
     <template v-else-if="impact">
+      <p class="print-only print-header" data-test="print-header">
+        Informe de impacto · generado el {{ printedOn }} con los datos de Airtable de ese momento.
+        <template v-if="pricePct !== 0">Incluye una simulación de precio {{ formatSignedPct(pricePct) }}: no es un cambio real.</template>
+      </p>
       <div class="summary" data-test="impact-summary">
         <p class="summary__subject">
           {{ impact.subject.label }}
@@ -77,14 +89,15 @@ onBeforeUnmount(() => controller?.abort());
           <span class="sim-tag">Simulación {{ formatSignedPct(pricePct) }}</span>:
           {{ formatSignedEuro(simulatedTotals.delta) }} al año ({{ formatSignedPct(simulatedTotals.deltaPct) }})
         </p>
-        <div class="summary__actions">
+        <div class="summary__actions no-print">
           <CopySummary :impact="impact" :price-pct="pricePct" />
           <CopyLink v-if="shareUrl" :url="shareUrl" />
+          <button type="button" class="action-button" @click="printReport">Descargar PDF</button>
         </div>
       </div>
 
       <template v-if="impact.totals.garmentCount > 0">
-        <PriceSimulator v-model="pricePct" :subject-kind="impact.subject.tipo" />
+        <PriceSimulator v-model="pricePct" class="no-print" :subject-kind="impact.subject.tipo" />
 
         <h3 class="impact__heading">Prendas afectadas</h3>
         <GarmentTable :garments="impact.garments" :price-pct="pricePct" />
@@ -115,4 +128,5 @@ onBeforeUnmount(() => controller?.abort());
 .summary__actions { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: start; margin-top: 0.5rem; }
 .summary__simulation { margin: 0; font-weight: 600; color: var(--sim-text); font-variant-numeric: tabular-nums; }
 .impact__heading { font-size: 1.0625rem; margin-top: 0.5rem; }
+.print-header { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
 </style>
