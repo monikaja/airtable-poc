@@ -112,6 +112,7 @@ Requisitos: Node 26 y una cuenta de Airtable. La cuenta de Vercel y la clave de 
 | `npm run typecheck` | Comprobación de tipos con `vue-tsc` |
 | `npm run build` | Comprobación de tipos y build de producción |
 | `npm run seed` | Crea las tablas y los datos de demo en Airtable |
+| `npm run perf -- <url>` | Mide `/api/impact` en un despliegue frente al objetivo de 3 s |
 
 Cada pull request y cada push a `main` pasan por CI (GitHub Actions): tipos, tests y build de producción, con la versión de Node de `engines`. No necesita secretos, porque los tests usan dobles de Airtable y de la API de Anthropic.
 
@@ -130,6 +131,20 @@ Incluye casos pensados para la demo:
 - **TJ-007**, un tejido descatalogado que usan 3 prendas en producción y que afecta a 4 clientes. Sus alternativas son TJ-008, TJ-009 y TJ-010, con distinto precio y plazo.
 - **Materiales en riesgo:** dos en revisión (TJ-015 y AV-005) y un proveedor con 75 días de plazo.
 - **TJ-030**, un tejido sin ningún uso, para ver el estado vacío.
+
+## Rendimiento
+
+El PRD pide el análisis de impacto en menos de 3 segundos con el volumen de la demo. Medición del 23/11/2026 contra producción (`npm run perf -- https://airtable-poc-six.vercel.app`), 10 peticiones seguidas por caso desde Europa, red incluida:
+
+| Caso | Primera | Mediana | p95 | Máx. |
+| --- | ---: | ---: | ---: | ---: |
+| Tejido TJ-007 (3 prendas, 4 clientes) | 1837 ms | 141 ms | 1837 ms | 1837 ms |
+| Avío AV-005 | 152 ms | 130 ms | 170 ms | 170 ms |
+| Proveedor Anatolia Dokuma | 126 ms | 129 ms | 145 ms | 145 ms |
+
+- **Peor caso, la primera petición (1,8 s):** paga el arranque en frío de la función y la lectura de las tablas de Airtable, espaciada a 250 ms para respetar su límite. Cumple el objetivo con margen.
+- **Con la caché de 60 s:** las respuestas bajan a unos 130–170 ms, casi todo red.
+- El script solo lee y no necesita secretos. Si alguna petición supera los 3 s, termina con código 1.
 
 ## Decisiones
 
