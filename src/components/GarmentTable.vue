@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { simulateGarment } from '../../shared/simulation';
 import type { AffectedGarment } from '../../shared/types';
-import { formatDays, formatEuro } from '../format';
+import { formatDays, formatEuro, formatSignedEuro, formatSignedPct } from '../format';
 import RiskBadge from './RiskBadge.vue';
 
-defineProps<{ garments: AffectedGarment[] }>();
+defineProps<{ garments: AffectedGarment[]; pricePct: number }>();
 </script>
 
 <template>
@@ -17,7 +18,11 @@ defineProps<{ garments: AffectedGarment[] }>();
           <th scope="col">Riesgo</th>
           <th scope="col">Plazo crítico</th>
           <th scope="col" class="num">Coste materiales</th>
-          <th scope="col" class="num">Del material afectado</th>
+          <th v-if="pricePct === 0" scope="col" class="num">Del material afectado</th>
+          <template v-else>
+            <th scope="col" class="num sim">Coste simulado</th>
+            <th scope="col" class="num sim">Diferencia</th>
+          </template>
         </tr>
       </thead>
       <tbody>
@@ -27,7 +32,14 @@ defineProps<{ garments: AffectedGarment[] }>();
           <td><RiskBadge :risk="garment.risk" /></td>
           <td>{{ formatDays(garment.criticalLeadTimeDays) }}</td>
           <td class="num">{{ formatEuro(garment.materialsCost) }}</td>
-          <td class="num">{{ formatEuro(garment.affectedMaterialCost) }}</td>
+          <td v-if="pricePct === 0" class="num">{{ formatEuro(garment.affectedMaterialCost) }}</td>
+          <template v-else>
+            <td class="num sim">{{ formatEuro(simulateGarment(garment, pricePct).simulated) }}</td>
+            <td class="num sim">
+              {{ formatSignedEuro(simulateGarment(garment, pricePct).delta) }}
+              <span class="pct">{{ formatSignedPct(simulateGarment(garment, pricePct).deltaPct) }}</span>
+            </td>
+          </template>
         </tr>
       </tbody>
     </table>

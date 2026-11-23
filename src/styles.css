@@ -85,3 +85,17 @@ h1, h2, h3 { line-height: 1.25; margin: 0; }
 .table tbody th { font-weight: 500; }
 .table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .table .code { font-weight: 600; margin-right: 0.25rem; }
+
+/* Simulated figures are always marked: tag, colour and dashed border. */
+.sim-tag {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border: 1px dashed var(--sim-border);
+  border-radius: 999px;
+  background: var(--sim-bg);
+  color: var(--sim-text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.table .sim { background: var(--sim-bg); color: var(--sim-text); }
+.table .pct { display: block; font-size: 0.8125rem; }

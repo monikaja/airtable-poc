@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { simulateClient } from '../../shared/simulation';
 import type { AffectedClient } from '../../shared/types';
-import { formatEuro, formatNumber } from '../format';
+import { formatEuro, formatNumber, formatSignedEuro, formatSignedPct } from '../format';
 
-defineProps<{ clients: AffectedClient[] }>();
+defineProps<{ clients: AffectedClient[]; pricePct: number }>();
 </script>
 
 <template>
@@ -16,6 +17,10 @@ defineProps<{ clients: AffectedClient[] }>();
           <th scope="col" class="num">Prendas</th>
           <th scope="col" class="num">Unidades anuales</th>
           <th scope="col" class="num">Coste anual</th>
+          <template v-if="pricePct !== 0">
+            <th scope="col" class="num sim">Coste anual simulado</th>
+            <th scope="col" class="num sim">Impacto anual</th>
+          </template>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +30,13 @@ defineProps<{ clients: AffectedClient[] }>();
           <td class="num">{{ formatNumber(client.garmentCount) }}</td>
           <td class="num">{{ formatNumber(client.annualUnits) }}</td>
           <td class="num">{{ formatEuro(client.annualCost) }}</td>
+          <template v-if="pricePct !== 0">
+            <td class="num sim">{{ formatEuro(simulateClient(client, pricePct).simulated) }}</td>
+            <td class="num sim">
+              {{ formatSignedEuro(simulateClient(client, pricePct).delta) }}
+              <span class="pct">{{ formatSignedPct(simulateClient(client, pricePct).deltaPct) }}</span>
+            </td>
+          </template>
         </tr>
       </tbody>
     </table>
