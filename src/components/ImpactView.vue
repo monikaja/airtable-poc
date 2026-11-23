@@ -4,6 +4,7 @@ import { simulateTotals } from '../../shared/simulation';
 import type { ImpactResult, SearchResult, SubjectKind } from '../../shared/types';
 import { formatEuro, formatSignedEuro, formatSignedPct, plural } from '../format';
 import ClientTable from './ClientTable.vue';
+import CopySummary from './CopySummary.vue';
 import GarmentTable from './GarmentTable.vue';
 import PriceSimulator from './PriceSimulator.vue';
 
@@ -66,6 +67,7 @@ onBeforeUnmount(() => controller?.abort());
           <span class="sim-tag">Simulación {{ formatSignedPct(pricePct) }}</span>:
           {{ formatSignedEuro(simulatedTotals.delta) }} al año ({{ formatSignedPct(simulatedTotals.deltaPct) }})
         </p>
+        <CopySummary class="summary__copy" :impact="impact" :price-pct="pricePct" />
       </div>
 
       <template v-if="impact.totals.garmentCount > 0">
@@ -97,6 +99,7 @@ onBeforeUnmount(() => controller?.abort());
 .summary__subject { margin: 0; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .summary__status { font-size: 0.8125rem; padding: 0 0.5rem; border: 1px solid var(--border-strong); border-radius: 999px; }
 .summary__headline { margin: 0; font-size: 1.25rem; }
+.summary__copy { margin-top: 0.5rem; }
 .summary__simulation { margin: 0; font-weight: 600; color: var(--sim-text); font-variant-numeric: tabular-nums; }
 .impact__heading { font-size: 1.0625rem; margin-top: 0.5rem; }
 </style>
