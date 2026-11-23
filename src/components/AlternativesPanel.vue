@@ -2,6 +2,7 @@
 import { onBeforeUnmount, ref, watch } from 'vue';
 import type { AlternativesResult, ExplanationSource, SearchResult } from '../../shared/types';
 import { formatDays, formatEuro, formatSignedPct } from '../format';
+import PriceDate from './PriceDate.vue';
 import RiskBadge from './RiskBadge.vue';
 
 const props = defineProps<{
@@ -57,10 +58,13 @@ onBeforeUnmount(() => controller?.abort());
     <p v-else-if="error" class="error" role="alert">{{ error }}</p>
 
     <template v-else-if="result">
-      <p class="reference" data-test="reference">
-        Frente a <strong>{{ result.reference.label }}</strong>:
-        {{ price(result.reference.price, result.reference.unit) }} · {{ formatDays(result.reference.leadTimeDays) }}
-      </p>
+      <div class="reference" data-test="reference">
+        <p class="reference__text">
+          Frente a <strong>{{ result.reference.label }}</strong>:
+          {{ price(result.reference.price, result.reference.unit) }} · {{ formatDays(result.reference.leadTimeDays) }}
+        </p>
+        <PriceDate :updated-on="result.reference.priceUpdatedOn" />
+      </div>
 
       <p v-if="result.alternatives.length === 0" class="muted">
         <template v-if="result.reference.tipo === 'tejido'">
@@ -89,6 +93,7 @@ onBeforeUnmount(() => controller?.abort());
               <dd>{{ formatDays(option.leadTimeDays) }}</dd>
             </div>
           </dl>
+          <PriceDate :updated-on="option.priceUpdatedOn" />
           <p v-if="option.riskReason" class="card__risk">{{ option.riskReason }}</p>
           <p class="card__explanation">{{ option.explanation }}</p>
           <p class="card__source">{{ SOURCE_LABELS[option.explanationSource] }}</p>
@@ -103,7 +108,8 @@ onBeforeUnmount(() => controller?.abort());
 .alternatives__title { font-size: 1.0625rem; }
 .muted { margin: 0; color: var(--text-muted); }
 .error { margin: 0; color: var(--danger-text); }
-.reference { margin: 0; font-size: 0.9375rem; color: var(--text-muted); }
+.reference { display: grid; gap: 0.125rem; font-size: 0.9375rem; color: var(--text-muted); }
+.reference__text { margin: 0; }
 .reference strong { color: var(--text); }
 .alternatives__list { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
 .card {

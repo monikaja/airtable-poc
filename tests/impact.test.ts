@@ -7,8 +7,8 @@ import { bomLine, catalogLine, client, fabric, garment, snapshot, supplier, trim
 const data = snapshot({
   suppliers: [supplier({ id: 'recP4', name: 'Anatolia Dokuma' }), supplier({ id: 'recP12', name: 'Cremalleras Duero' })],
   fabrics: [
-    fabric({ id: 'recTJ7', code: 'TJ-007', name: 'Sarga 65/35 marino', status: 'Descatalogado', supplierId: 'recP4' }),
-    fabric({ id: 'recTJ30', code: 'TJ-030', name: 'Lino lavado blanco', supplierId: 'recP4' }),
+    fabric({ id: 'recTJ7', code: 'TJ-007', name: 'Sarga 65/35 marino', status: 'Descatalogado', supplierId: 'recP4', priceUpdatedOn: '2026-03-03' }),
+    fabric({ id: 'recTJ30', code: 'TJ-030', name: 'Lino lavado blanco', supplierId: 'recP4', priceUpdatedOn: '2026-09-14' }),
   ],
   trims: [trim({ id: 'recAV7', reference: 'AV-007', type: 'Cremallera', supplierId: 'recP12' })],
   garments: [
@@ -43,7 +43,7 @@ describe('computeImpact', () => {
   it('lists the garments that use a fabric, with their Airtable values and affected material cost', () => {
     const impact = computeImpact(data, 'tejido', 'recTJ7');
 
-    expect(impact?.subject).toEqual({ tipo: 'tejido', id: 'recTJ7', label: 'TJ-007 · Sarga 65/35 marino', status: 'Descatalogado', materialCount: 1 });
+    expect(impact?.subject).toEqual({ tipo: 'tejido', id: 'recTJ7', label: 'TJ-007 · Sarga 65/35 marino', status: 'Descatalogado', materialCount: 1, priceUpdatedOn: '2026-03-03' });
     expect(impact?.garments).toEqual([
       { id: 'recPR1', code: 'PR-001', name: 'Pantalón multibolsillos', phase: 'Producción', risk: 'Rojo', materialsCost: 8, criticalLeadTimeDays: 30, affectedMaterialCost: 6.72 },
       { id: 'recPR2', code: 'PR-002', name: 'Chaqueta de trabajo', phase: 'Producción', risk: 'Rojo', materialsCost: 10.31, criticalLeadTimeDays: 20, affectedMaterialCost: 8.64 },
@@ -71,7 +71,7 @@ describe('computeImpact', () => {
 
   it('covers every material of a supplier', () => {
     const impact = computeImpact(data, 'proveedor', 'recP4');
-    expect(impact?.subject).toEqual({ tipo: 'proveedor', id: 'recP4', label: 'Anatolia Dokuma', status: 'Activo', materialCount: 2 });
+    expect(impact?.subject).toEqual({ tipo: 'proveedor', id: 'recP4', label: 'Anatolia Dokuma', status: 'Activo', materialCount: 2, priceUpdatedOn: '2026-03-03' });
     expect(impact?.garments.map((item) => item.code)).toEqual(['PR-001', 'PR-002', 'PR-003']);
   });
 

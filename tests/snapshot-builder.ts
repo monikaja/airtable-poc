@@ -21,6 +21,7 @@ export const fabric = (overrides: Partial<Fabric> & { id: string }): Fabric => (
   status: 'Activo',
   supplierId: null,
   supplierLeadTimeDays: null,
+  priceUpdatedOn: null,
   ...overrides,
 });
 
@@ -31,6 +32,7 @@ export const trim = (overrides: Partial<Trim> & { id: string }): Trim => ({
   status: 'Activo',
   supplierId: null,
   supplierLeadTimeDays: null,
+  priceUpdatedOn: null,
   ...overrides,
 });
 

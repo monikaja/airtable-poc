@@ -124,6 +124,7 @@ describe('mapSnapshot', () => {
             Estado: 'Descatalogado',
             Proveedor: ['recP'],
             'Plazo proveedor': [30],
+            'Precio actualizado el': '2026-03-03',
           },
         },
       ],
@@ -141,6 +142,7 @@ describe('mapSnapshot', () => {
       status: 'Descatalogado',
       supplierId: 'recP',
       supplierLeadTimeDays: 30,
+      priceUpdatedOn: '2026-03-03',
     });
     expect(snapshot.garments[0]).toMatchObject({ phase: 'Producción', materialsCost: 10.48, criticalLeadTimeDays: 30, risk: 'Rojo' });
   });

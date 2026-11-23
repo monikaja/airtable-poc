@@ -10,19 +10,19 @@ const fabric: SearchResult = { tipo: 'tejido', id: 'recF7', label: 'TJ-007 · Sa
 const result: AlternativesResult = {
   reference: {
     tipo: 'tejido', id: 'recF7', label: 'TJ-007 · Sarga 65/35 marino', detail: '65 % poliéster, 35 % algodón · 245 g/m²',
-    price: 4.8, unit: 'm', leadTimeDays: 30, status: 'Descatalogado',
+    price: 4.8, unit: 'm', leadTimeDays: 30, status: 'Descatalogado', priceUpdatedOn: '2026-03-03',
   },
   alternatives: [
     {
       tipo: 'tejido', id: 'recF9', label: 'TJ-009 · Sarga 60/40 marino', detail: '60 % poliéster, 40 % algodón · 255 g/m²',
       supplierName: 'Lianhe Weaving', price: 4.6, unit: 'm', priceDelta: -0.2, priceDeltaPct: -4.2, leadTimeDays: 50,
-      status: 'Activo', risk: 'Verde', riskReason: null,
+      status: 'Activo', risk: 'Verde', riskReason: null, priceUpdatedOn: '2026-10-28',
       explanation: 'Más barata, pero tarda 20 días más.', explanationSource: 'llm',
     },
     {
       tipo: 'tejido', id: 'recF10', label: 'TJ-010 · Sarga 70/30 azul noche', detail: '70 % poliéster, 30 % algodón · 260 g/m²',
       supplierName: 'Tecelagem do Norte', price: 5.4, unit: 'm', priceDelta: 0.6, priceDeltaPct: 12.5, leadTimeDays: 18,
-      status: 'En revisión', risk: 'Ámbar', riskReason: 'Material en revisión',
+      status: 'En revisión', risk: 'Ámbar', riskReason: 'Material en revisión', priceUpdatedOn: null,
       explanation: 'Composición y gramaje compatibles; cuesta un 12,5 % más y entrega en 18 días (frente a 30).', explanationSource: 'plantilla',
     },
   ],

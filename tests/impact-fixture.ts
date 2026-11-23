@@ -1,8 +1,12 @@
 import type { ImpactResult } from '../shared/types';
 
+/** Today's local date as Airtable writes it, so the fixture price is always up to date. */
+const today = new Date();
+export const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
 /** TJ-007 as in the demo base: discontinued, used by 3 garments in production. */
 export const impactResult: ImpactResult = {
-  subject: { tipo: 'tejido', id: 'recF7', label: 'TJ-007 · Sarga 65/35 marino', status: 'Descatalogado', materialCount: 1 },
+  subject: { tipo: 'tejido', id: 'recF7', label: 'TJ-007 · Sarga 65/35 marino', status: 'Descatalogado', materialCount: 1, priceUpdatedOn: todayIso },
   garments: [
     { id: 'G1', code: 'PR-001', name: 'Pantalón multibolsillos', phase: 'Producción', risk: 'Rojo', materialsCost: 8, criticalLeadTimeDays: 30, affectedMaterialCost: 6 },
     { id: 'G2', code: 'PR-002', name: 'Chaqueta de trabajo', phase: 'Aprobada', risk: 'Ámbar', materialsCost: 12.5, criticalLeadTimeDays: null, affectedMaterialCost: 7.2 },
