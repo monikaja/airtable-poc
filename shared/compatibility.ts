@@ -1,4 +1,4 @@
-import type { MaterialStatus, TrimType } from './schema';
+import type { MaterialStatus, TrimType } from './schema.js';
 
 // Deterministic compatibility rule for alternatives. The LLM never decides
 // compatibility: it only explains alternatives that already passed this filter.

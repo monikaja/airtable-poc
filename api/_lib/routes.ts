@@ -1,7 +1,9 @@
+import { findAlternatives } from '../../shared/alternatives.js';
 import { computeImpact } from '../../shared/impact.js';
 import { searchSubjects } from '../../shared/search.js';
-import { isSubjectKind, type Snapshot, type SubjectKind } from '../../shared/types.js';
+import { isSubjectKind, type AlternativesResult, type Snapshot, type SubjectKind } from '../../shared/types.js';
 import { AirtableReadError } from './airtable.js';
+import type { Explainer } from './explainer.js';
 import { ConfigError } from './snapshot.js';
 
 // Route logic, separate from the Vercel entry files so tests can pass a fake snapshot.
@@ -52,4 +54,40 @@ export async function impactRoute(request: Request, loadSnapshot: SnapshotLoader
   } catch (error) {
     return errorResponse(error);
   }
+}
+
+export async function alternativesRoute(
+  request: Request,
+  loadSnapshot: SnapshotLoader,
+  explainer: Explainer | null,
+): Promise<Response> {
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id) return jsonResponse({ error: 'Falta el parámetro id.' }, 400);
+
+  let base;
+  try {
+    base = findAlternatives(await loadSnapshot(), id);
+  } catch (error) {
+    return errorResponse(error);
+  }
+  if (!base) return jsonResponse({ error: 'No se encontró el material.' }, 404);
+
+  // The deterministic answer never depends on the LLM: without sentences it is still served.
+  let sentences = new Map<string, string>();
+  let explanationsAvailable = base.alternatives.length === 0;
+  if (base.alternatives.length > 0 && explainer) {
+    try {
+      sentences = await explainer(base);
+      explanationsAvailable = true;
+    } catch (error) {
+      console.error('No se pudieron redactar las explicaciones de alternativas:', error);
+    }
+  }
+
+  const result: AlternativesResult = {
+    reference: base.reference,
+    alternatives: base.alternatives.map((option) => ({ ...option, explanation: sentences.get(option.id) ?? null })),
+    explanationsAvailable,
+  };
+  return jsonResponse(result);
 }
