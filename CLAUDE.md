@@ -5,7 +5,7 @@ Prototipo de portfolio. Dado un tejido, un avío o un proveedor, muestra qué pr
 
 ## Stack
 - Frontend: Vue 3 + Vite + TypeScript, en /src
-- Backend: funciones serverless de Vercel (Node 20), en /api
+- Backend: funciones serverless de Vercel (Node 26), en /api
 - Datos: Airtable como fuente de verdad, API REST
 - LLM: API de Anthropic, solo para redactar la explicación de alternativas
 - Datos de demo: script en /scripts/seed.ts
