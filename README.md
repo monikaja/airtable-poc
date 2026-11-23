@@ -73,7 +73,7 @@ shared/      Lógica pura compartida: compatibilidad, impacto, alternativas, sim
 src/         Frontend en Vue 3
 scripts/     Seed de la base de demo
 tests/       Tests de Vitest (lógica, rutas con dobles y componentes)
-docs/        PRD y configuración de los campos calculados
+docs/        PRD, campos calculados, vistas y automatización de Airtable
 ```
 
 ## Puesta en marcha
@@ -94,7 +94,8 @@ Requisitos: Node 26 y una cuenta de Airtable. La cuenta de Vercel y la clave de 
 
 3. **Crea las tablas y los datos de demo** con `npm run seed`. Si la base ya tiene datos, `npm run seed -- --reset` borra los registros (nunca las tablas) y los vuelve a crear.
 4. **Crea a mano los campos calculados** siguiendo [docs/campos-calculados.md](docs/campos-calculados.md). La API de Airtable no permite crear fórmulas, lookups ni rollups.
-5. **Arranca en local** con `npm run dev`. Usa `vercel dev`, que sirve a la vez el frontend y `/api`.
+5. **Opcional: configura las vistas y el aviso a Cuentas** (kanban de prendas por fase y correo al descatalogar un material) siguiendo [docs/vistas-y-automatizacion.md](docs/vistas-y-automatizacion.md).
+6. **Arranca en local** con `npm run dev`. Usa `vercel dev`, que sirve a la vez el frontend y `/api`.
 
 ### Comandos
 
