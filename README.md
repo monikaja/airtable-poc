@@ -152,3 +152,7 @@ El PRD pide el análisis de impacto en menos de 3 segundos con el volumen de la 
 - **Lógica pura en `shared/`:** la compatibilidad, el impacto, las alternativas y la simulación son funciones sin efectos secundarios, probadas sin red. Las rutas reciben sus dependencias (lector de Airtable y redactor) para poder probarlas con dobles.
 - **El LLM nunca decide, solo redacta:** la selección es reproducible y explicable, y la app no depende de él para funcionar.
 - **Accesibilidad:** el semáforo siempre lleva texto además de color, el buscador se maneja con teclado y la interfaz tiene modo oscuro.
+
+## Licencia
+
+[MIT](LICENSE).
