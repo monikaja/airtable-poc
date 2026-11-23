@@ -87,7 +87,7 @@ function cacheKey(base: AlternativesBase): string {
 
 const cache = createCache(EXPLANATION_CACHE_TTL_MS);
 
-/** Null when ANTHROPIC_API_KEY is missing: alternatives are then served without sentences. */
+/** Null when ANTHROPIC_API_KEY is missing: alternatives then use the template sentence. */
 export function getExplainer(): Explainer | null {
   if (!process.env.ANTHROPIC_API_KEY) return null;
   const client = new Anthropic({ timeout: REQUEST_TIMEOUT_MS, maxRetries: 1 });

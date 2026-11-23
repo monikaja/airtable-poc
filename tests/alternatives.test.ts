@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findAlternatives, MAX_ALTERNATIVES } from '../shared/alternatives';
+import { findAlternatives, MAX_ALTERNATIVES, templateExplanation } from '../shared/alternatives';
 import type { Fabric } from '../shared/types';
 import { fabric, snapshot, supplier, trim } from './snapshot-builder';
 
@@ -114,5 +114,42 @@ describe('findAlternatives', () => {
 
   it('returns null for an unknown material', () => {
     expect(findAlternatives(data, 'NOPE')).toBeNull();
+  });
+});
+
+describe('templateExplanation', () => {
+  const result = findAlternatives(data, 'TJ-007')!;
+  const option = (id: string) => result.alternatives.find((item) => item.id === id)!;
+
+  it('summarises compatibility, price and lead time against the reference', () => {
+    expect(templateExplanation(result.reference, option('TJ-008'))).toBe(
+      'Composición y gramaje compatibles; cuesta un 6,3 % más y entrega en 21 días (frente a 30).',
+    );
+    expect(templateExplanation(result.reference, option('TJ-009'))).toBe(
+      'Composición y gramaje compatibles; cuesta un 4,2 % menos y entrega en 50 días (frente a 30).',
+    );
+  });
+
+  it('adds what to watch for amber alternatives', () => {
+    const amber = { ...option('TJ-010'), risk: 'Ámbar' as const, riskReason: 'Material en revisión' };
+    expect(templateExplanation(result.reference, amber)).toBe(
+      'Composición y gramaje compatibles; cuesta un 12,5 % más y entrega en 18 días (frente a 30). A vigilar: material en revisión.',
+    );
+  });
+
+  it('says so when the lead time matches the reference', () => {
+    const same = { ...option('TJ-008'), leadTimeDays: 30 };
+    expect(templateExplanation(result.reference, same)).toBe('Composición y gramaje compatibles; cuesta un 6,3 % más y mismo plazo (30 días).');
+  });
+
+  it('handles trims, equal prices and unknown values', () => {
+    const reference = { ...result.reference, tipo: 'avio' as const, leadTimeDays: null };
+    const same = { ...option('TJ-008'), tipo: 'avio' as const, priceDelta: 0, priceDeltaPct: 0, leadTimeDays: 12 };
+    expect(templateExplanation(reference, same)).toBe('Mismo tipo de avío; cuesta lo mismo y entrega en 12 días.');
+
+    const unknown = { ...option('TJ-008'), priceDelta: null, priceDeltaPct: null, leadTimeDays: null };
+    expect(templateExplanation(result.reference, unknown)).toBe(
+      'Composición y gramaje compatibles; precio sin comparar y plazo sin informar.',
+    );
   });
 });

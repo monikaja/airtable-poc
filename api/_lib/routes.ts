@@ -1,4 +1,4 @@
-import { findAlternatives } from '../../shared/alternatives.js';
+import { findAlternatives, templateExplanation } from '../../shared/alternatives.js';
 import { computeImpact } from '../../shared/impact.js';
 import { searchSubjects } from '../../shared/search.js';
 import { isSubjectKind, type AlternativesResult, type Snapshot, type SubjectKind } from '../../shared/types.js';
@@ -72,13 +72,11 @@ export async function alternativesRoute(
   }
   if (!base) return jsonResponse({ error: 'No se encontró el material.' }, 404);
 
-  // The deterministic answer never depends on the LLM: without sentences it is still served.
+  // The answer never depends on the LLM: any sentence it does not provide comes from the template.
   let sentences = new Map<string, string>();
-  let explanationsAvailable = base.alternatives.length === 0;
   if (base.alternatives.length > 0 && explainer) {
     try {
       sentences = await explainer(base);
-      explanationsAvailable = true;
     } catch (error) {
       console.error('No se pudieron redactar las explicaciones de alternativas:', error);
     }
@@ -86,8 +84,12 @@ export async function alternativesRoute(
 
   const result: AlternativesResult = {
     reference: base.reference,
-    alternatives: base.alternatives.map((option) => ({ ...option, explanation: sentences.get(option.id) ?? null })),
-    explanationsAvailable,
+    alternatives: base.alternatives.map((option) => {
+      const sentence = sentences.get(option.id);
+      return sentence
+        ? { ...option, explanation: sentence, explanationSource: 'llm' as const }
+        : { ...option, explanation: templateExplanation(base.reference, option), explanationSource: 'plantilla' as const };
+    }),
   };
   return jsonResponse(result);
 }

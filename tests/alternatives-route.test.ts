@@ -12,6 +12,7 @@ const data = snapshot({
   ],
 });
 const base = findAlternatives(data, 'REF')!;
+const TEMPLATE_SENTENCE = 'Composición y gramaje compatibles; cuesta un 6,3 % más y entrega en 21 días.';
 const request = (query: string) => new Request(`http://localhost/api/alternatives${query}`);
 const load = async () => data;
 
@@ -23,28 +24,41 @@ describe('GET /api/alternatives', () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       reference: expect.objectContaining({ id: 'REF', label: 'TJ-007 · Sarga marino' }),
-      alternatives: [expect.objectContaining({ id: 'ALT', priceDeltaPct: 6.3, explanation: 'Casi la misma mezcla; sube 6,3 % pero entrega en 21 días.' })],
-      explanationsAvailable: true,
+      alternatives: [
+        expect.objectContaining({
+          id: 'ALT',
+          priceDeltaPct: 6.3,
+          explanation: 'Casi la misma mezcla; sube 6,3 % pero entrega en 21 días.',
+          explanationSource: 'llm',
+        }),
+      ],
     });
   });
 
-  it('still answers the alternatives when the LLM fails, flagging that sentences are missing', async () => {
+  const templated = { id: 'ALT', explanation: TEMPLATE_SENTENCE, explanationSource: 'plantilla' };
+
+  it('falls back to the template sentence when the LLM fails', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const response = await alternativesRoute(request('?id=REF'), load, async () => Promise.reject(new Error('timeout')));
-    expect(await response.json()).toMatchObject({ alternatives: [{ id: 'ALT', explanation: null }], explanationsAvailable: false });
+    expect(await response.json()).toMatchObject({ alternatives: [templated] });
     expect(consoleError).toHaveBeenCalled();
     consoleError.mockRestore();
   });
 
-  it('answers without sentences when there is no API key', async () => {
+  it('uses the template sentence when there is no API key', async () => {
     const response = await alternativesRoute(request('?id=REF'), load, null);
-    expect(await response.json()).toMatchObject({ alternatives: [{ id: 'ALT', explanation: null }], explanationsAvailable: false });
+    expect(await response.json()).toMatchObject({ alternatives: [templated] });
+  });
+
+  it('uses the template sentence for an alternative the LLM skipped', async () => {
+    const response = await alternativesRoute(request('?id=REF'), load, async () => new Map());
+    expect(await response.json()).toMatchObject({ alternatives: [templated] });
   });
 
   it('does not call the LLM when there are no alternatives', async () => {
     const explainer = vi.fn<Explainer>();
     const response = await alternativesRoute(request('?id=LONE'), load, explainer);
-    expect(await response.json()).toMatchObject({ alternatives: [], explanationsAvailable: true });
+    expect(await response.json()).toEqual({ reference: expect.objectContaining({ id: 'LONE' }), alternatives: [] });
     expect(explainer).not.toHaveBeenCalled();
   });
 

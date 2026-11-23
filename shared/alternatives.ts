@@ -1,6 +1,6 @@
 import { findCompatibleFabrics, findCompatibleTrims } from './compatibility.js';
 import { fabricLabel, trimLabel } from './labels.js';
-import type { AlternativeOption, AlternativesBase, Fabric, Snapshot, Trim } from './types.js';
+import type { AlternativeOption, AlternativeReference, AlternativesBase, Fabric, Snapshot, Trim } from './types.js';
 
 // Deterministic part of "alternatives": compatibility filter, risk, ordering and the
 // top-3 cut. The LLM only writes a sentence for the options this module returns.
@@ -132,4 +132,34 @@ export function findAlternatives(snapshot: Snapshot, id: string): AlternativesBa
   if (!base) return null;
 
   return { reference: base.reference, alternatives: [...base.alternatives].sort(byRiskPriceLeadTime).slice(0, MAX_ALTERNATIVES) };
+}
+
+const percent = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 1 });
+
+/**
+ * Deterministic sentence built from the same facts the LLM receives. Used when the LLM
+ * is not configured, fails, refuses or skips an alternative, so the page never has gaps.
+ */
+export function templateExplanation(reference: AlternativeReference, option: AlternativeOption): string {
+  const compatibility = option.tipo === 'tejido' ? 'Composición y gramaje compatibles' : 'Mismo tipo de avío';
+
+  let price = 'precio sin comparar';
+  if (option.priceDeltaPct !== null) {
+    if (option.priceDeltaPct === 0) price = 'cuesta lo mismo';
+    else price = `cuesta un ${percent.format(Math.abs(option.priceDeltaPct))} % ${option.priceDeltaPct > 0 ? 'más' : 'menos'}`;
+  }
+
+  let leadTime = 'plazo sin informar';
+  if (option.leadTimeDays !== null) {
+    if (option.leadTimeDays === reference.leadTimeDays) leadTime = `mismo plazo (${option.leadTimeDays} días)`;
+    else {
+      leadTime = `entrega en ${option.leadTimeDays} días`;
+      if (reference.leadTimeDays !== null) leadTime += ` (frente a ${reference.leadTimeDays})`;
+    }
+  }
+
+  const watch = option.risk === 'Ámbar' && option.riskReason
+    ? ` A vigilar: ${option.riskReason.charAt(0).toLocaleLowerCase('es')}${option.riskReason.slice(1)}.`
+    : '';
+  return `${compatibility}; ${price} y ${leadTime}.${watch}`;
 }

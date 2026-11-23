@@ -189,7 +189,11 @@ export interface AlternativesBase {
 
 export interface AlternativesResult {
   reference: AlternativeReference;
-  alternatives: (AlternativeOption & { explanation: string | null })[];
-  /** False when the explanations could not be written (no API key, LLM error or refusal). */
-  explanationsAvailable: boolean;
+  alternatives: (AlternativeOption & {
+    explanation: string;
+    /** "llm" when Claude wrote it; "plantilla" when the deterministic template filled in. */
+    explanationSource: ExplanationSource;
+  })[];
 }
+
+export type ExplanationSource = 'llm' | 'plantilla';
