@@ -4,6 +4,8 @@ Prototipo de PLM que responde en segundos a una pregunta clave: **si cambia un t
 
 Airtable es la fuente de verdad. Encima hay una web en Vue que busca el material, calcula el impacto, simula cambios de precio y propone alternativas compatibles. Todos los datos son ficticios.
 
+![Impacto de TJ-007 con una simulación de +10 % y sus alternativas compatibles](docs/captura.png)
+
 El planteamiento de negocio completo está en [docs/PRD.md](docs/PRD.md).
 
 ## Qué hace
