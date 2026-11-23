@@ -95,13 +95,14 @@ Requisitos: Node 26 y una cuenta de Airtable. La cuenta de Vercel y la clave de 
 3. **Crea las tablas y los datos de demo** con `npm run seed`. Si la base ya tiene datos, `npm run seed -- --reset` borra los registros (nunca las tablas) y los vuelve a crear.
 4. **Crea a mano los campos calculados** siguiendo [docs/campos-calculados.md](docs/campos-calculados.md). La API de Airtable no permite crear fórmulas, lookups ni rollups.
 5. **Opcional: configura las vistas y el aviso a Cuentas** (kanban de prendas por fase y correo al descatalogar un material) siguiendo [docs/vistas-y-automatizacion.md](docs/vistas-y-automatizacion.md).
-6. **Arranca en local** con `npm run dev`. Usa `vercel dev`, que sirve a la vez el frontend y `/api`.
+6. **Arranca en local** con `npm run dev:vercel`, que usa `vercel dev` para servir a la vez el frontend y `/api`. En Windows, `vercel dev` necesita crear enlaces simbólicos: activa el Modo de desarrollador (Configuración → Sistema → Para programadores) o usa una terminal de administrador; si no, falla con `EPERM: operation not permitted, symlink`.
 
 ### Comandos
 
 | Comando | Qué hace |
 | --- | --- |
-| `npm run dev` | Frontend y API en local con `vercel dev` |
+| `npm run dev:vercel` | Frontend y API en local con `vercel dev` |
+| `npm run dev` | Solo el frontend con Vite (lo usa `vercel dev` por dentro; no llama a `/api`) |
 | `npm test` | Tests con Vitest |
 | `npm run typecheck` | Comprobación de tipos con `vue-tsc` |
 | `npm run build` | Comprobación de tipos y build de producción |

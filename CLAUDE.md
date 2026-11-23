@@ -61,6 +61,7 @@ Unos 15 proveedores, 30 tejidos, 20 avíos, 25 prendas, 60 líneas de BOM, 30 mu
 - GET /api/alternatives?id= → hasta 3 materiales compatibles, con coste, plazo, riesgo y una frase del LLM
 
 ## Comandos
-- npm run dev → vercel dev en local
+- npm run dev:vercel → vercel dev en local (frontend y /api)
+- npm run dev → solo Vite; es el comando que vercel dev lanza por dentro, así que nunca debe llamar a vercel dev
 - npm run seed → crea tablas y datos de demo en la base (usa AIRTABLE_TOKEN_WRITE)
 - npm run build → build de producción
